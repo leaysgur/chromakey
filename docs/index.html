@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chromakey</title>
+  <style>
+    video {
+      background-color: #333;
+      width: 320px;
+      height: 240px;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    Click video pixel to adjust target color. /
+    Threshold:
+    <input type="range" value="100" min="0" max="255" />
+  </div>
+  <div>
+    Current settings: <span></span>
+  </div>
+
+  <div>
+    <video muted playsinline></video>
+  </div>
+  <div>
+    Background:
+    <input type="file" />
+    or
+    <input type="button" value="random color" />
+  </div>
+
+  🔽
+
+  <div>
+    <video muted playsinline></video>
+  </div>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

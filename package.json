@@ -1,0 +1,15 @@
+{
+  "name": "chromakey",
+  "version": "0.0.0",
+  "description": "",
+  "main": "src/exports.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "build": "npx rollup src/exports.js --file docs/chromakey.js --format esm"
+  },
+  "keywords": [],
+  "author": "Yuji Sugiura",
+  "license": "MIT"
+}
