@@ -1,13 +1,13 @@
 {
   "name": "chromakey",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Minimum chroma key processing for your camera stream.",
   "main": "src/exports.js",
   "directories": {
     "doc": "docs"
   },
   "files": [
-      "src/*"
+    "src/*"
   ],
   "scripts": {
     "build": "npx rollup src/exports.js --file docs/chromakey.js --format esm"
