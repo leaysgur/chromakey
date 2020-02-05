@@ -49,7 +49,8 @@ class ChromaKey {
   }
 
   setThreshold(value) {
-    if (typeof value !== "number")
+    value = Number(value);
+    if (isNaN(value))
       throw new TypeError("Threshold must be a number!");
 
     this._settings.threshold = 255 - value;
