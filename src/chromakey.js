@@ -3,14 +3,14 @@ export class ChromaKey {
     this._$els = {
       $video,
       $tempCanvas: null,
-      $destCanvas: null,
+      $destCanvas: null
     };
 
     this._settings = {
       color: [0, 255, 0],
       threshold: 100,
       backgroundColor: [0, 255, 0],
-      backgroundMedia: null,
+      backgroundMedia: null
     };
 
     this._timer = null;
@@ -29,28 +29,53 @@ export class ChromaKey {
   }
 
   setColor(rgb) {
-    // TODO: assert
+    if (Array.isArray(rgb) === false)
+      throw new TypeError("RGB must be an array of number!");
+    if (rgb.some(c => typeof c !== "number"))
+      throw new TypeError("RGB must be an array of number!");
+
     this._settings.color = rgb;
   }
 
   setColorByOffset(offsetX, offsetY) {
+    if (!(typeof offsetX === "number" && typeof offsetY === "number"))
+      throw new TypeError("Offset X and Y must be a number!");
+
     const tempContext = this._$els.$tempCanvas.getContext("2d");
-    const { data: [r, g, b] } = tempContext.getImageData(offsetX, offsetY, 1, 1);
+    const {
+      data: [r, g, b]
+    } = tempContext.getImageData(offsetX, offsetY, 1, 1);
     this._settings.color = [r, g, b];
   }
 
   setThreshold(value) {
-    // TODO: assert
+    if (typeof value !== "number")
+      throw new TypeError("Threshold must be a number!");
+
     this._settings.threshold = 255 - value;
   }
 
-  setBackgroundMedia($imageOrVideo) {
-    // TODO: assert
-    this._settings.backgroundMedia = $imageOrVideo;
+  setBackgroundMedia($canvasImageSource) {
+    if (
+      !(
+        $canvasImageSource instanceof HTMLImageElement ||
+        $canvasImageSource instanceof HTMLVideoElement ||
+        $canvasImageSource instanceof HTMLCanvasElement
+      )
+    )
+      throw new TypeError(
+        "Media must be either one of img, video and canvas element!"
+      );
+
+    this._settings.backgroundMedia = $canvasImageSource;
   }
 
   setBackgroundColor(rgb) {
-    // TODO: assert
+    if (Array.isArray(rgb) === false)
+      throw new TypeError("RGB must be an array of number!");
+    if (rgb.some(c => typeof c !== "number"))
+      throw new TypeError("RGB must be an array of number!");
+
     this._settings.backgroundColor = rgb;
     this._settings.backgroundMedia = null;
   }
@@ -69,7 +94,6 @@ export class ChromaKey {
   }
 
   stop() {
-    // TODO: impl
     cancelAnimationFrame(this._timer);
     this._timer = null;
   }
@@ -78,7 +102,12 @@ export class ChromaKey {
     this._timer = requestAnimationFrame(this._draw.bind(this));
 
     const { $video, $tempCanvas, $destCanvas } = this._$els;
-    const { color, threshold, backgroundColor, backgroundMedia } = this._settings;
+    const {
+      color,
+      threshold,
+      backgroundColor,
+      backgroundMedia
+    } = this._settings;
 
     const tempContext = $tempCanvas.getContext("2d");
     const destContext = $destCanvas.getContext("2d");
@@ -86,7 +115,12 @@ export class ChromaKey {
     // video -> canvas(temp)
     tempContext.drawImage($video, 0, 0, $tempCanvas.width, $tempCanvas.height);
 
-    const imageData = tempContext.getImageData(0, 0, $tempCanvas.width, $tempCanvas.height);
+    const imageData = tempContext.getImageData(
+      0,
+      0,
+      $tempCanvas.width,
+      $tempCanvas.height
+    );
     // [pixel1(r, g, b, a), pixel2, ..., pixelN]
     const { data } = imageData;
     for (let i = 0, l = data.length; i < l; i += 4) {
@@ -94,9 +128,9 @@ export class ChromaKey {
       const rgb2 = [data[i], data[i + 1], data[i + 2]];
 
       const gap = Math.sqrt(
-        Math.pow((rgb1[0] - rgb2[0]), 2) +
-        Math.pow((rgb1[1] - rgb2[1]), 2) +
-        Math.pow((rgb1[2] - rgb2[2]), 2)
+        Math.pow(rgb1[0] - rgb2[0], 2) +
+          Math.pow(rgb1[1] - rgb2[1], 2) +
+          Math.pow(rgb1[2] - rgb2[2], 2)
       );
 
       if (gap < threshold) {
@@ -112,10 +146,22 @@ export class ChromaKey {
       destContext.fillStyle = `rgb(${backgroundColor.join(",")})`;
       destContext.fillRect(0, 0, $destCanvas.width, $destCanvas.height);
     } else {
-      destContext.drawImage(backgroundMedia, 0, 0, $destCanvas.width, $destCanvas.height);
+      destContext.drawImage(
+        backgroundMedia,
+        0,
+        0,
+        $destCanvas.width,
+        $destCanvas.height
+      );
     }
 
     // merge canvas(temp) and background
-    destContext.drawImage($tempCanvas, 0, 0, $destCanvas.width, $destCanvas.height);
+    destContext.drawImage(
+      $tempCanvas,
+      0,
+      0,
+      $destCanvas.width,
+      $destCanvas.height
+    );
   }
 }

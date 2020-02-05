@@ -1,6 +1,8 @@
 import { ChromaKey } from "./chromakey.js";
 
 export function create($video, options) {
-  // TODO: assert arguments
+  if ($video instanceof HTMLVideoElement === false)
+    throw new TypeError("Video element is required!");
+
   return new ChromaKey({ ...options, $video });
 }
