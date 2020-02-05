@@ -6,6 +6,9 @@
   "directories": {
     "doc": "docs"
   },
+  "files": [
+      "src/*"
+  ],
   "scripts": {
     "build": "npx rollup src/exports.js --file docs/chromakey.js --format esm"
   },
