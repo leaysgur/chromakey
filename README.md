@@ -36,4 +36,4 @@ See also https://leader22.github.io/chromakey/
 
 ## Alternatives
 
-To achieve virtual background, you may prefer https://leader22.github.io/chromakey/tfjs-body-pix/
+To achieve virtual background, you may prefer https://leader22.github.io/chromakey/tfjs-body-pix/index.html
