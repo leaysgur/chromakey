@@ -1,6 +1,12 @@
-const { bodyPix } = window;
+const { tf, bodyPix } = window;
 
 (async () => {
+  console.log(tf.version);
+  console.log(bodyPix.version);
+
+  // use WASM
+  await tf.setBackend("wasm");
+
   const net = await bodyPix.load();
 
   // input source
