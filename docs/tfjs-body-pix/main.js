@@ -23,6 +23,7 @@ const { tf, bodyPix } = window;
     $video.height = $destCanvas.height = $video.videoHeight;
 
     const destCtx = $destCanvas.getContext("2d");
+    $destCanvas.style.backgroundColor = "teal";
 
     // to remove background, need another canvas
     const $tempCanvas = document.createElement("canvas");
@@ -33,26 +34,19 @@ const { tf, bodyPix } = window;
     (async function loop() {
       requestAnimationFrame(loop);
 
-      tempCtx.drawImage($video, 0, 0);
-      const videoData = tempCtx.getImageData(0, 0, $tempCanvas.width, $tempCanvas.height);
-
+      // create mask on temp canvas
       const segmentation = await net.segmentPerson($video);
-      const { data } = bodyPix.toMask(segmentation);
-      for (let i = 0, l = data.length; i < l; i += 4) {
-        const [r, g, b, a] = [data[i], data[i + 1], data[i + 2], data[i + 3]];
+      const mask = bodyPix.toMask(segmentation);
+      tempCtx.putImageData(mask, 0, 0);
 
-        // if masked by black, make it transparent
-        if (r === 0 && g === 0 && b === 0 && a === 255) {
-          videoData.data[i + 3] = 0;
-        }
-      }
-      tempCtx.putImageData(videoData, 0, 0);
+      // draw original
+      destCtx.drawImage($video, 0, 0, $destCanvas.width, $destCanvas.height);
 
-      // merge background
-      destCtx.fillStyle = "lightblue";
-      destCtx.fillRect(0, 0, $destCanvas.width, $destCanvas.height);
-      // draw person image onto that
+      // then overwrap, masked area will be removed
+      destCtx.save();
+      destCtx.globalCompositeOperation = "destination-out";
       destCtx.drawImage($tempCanvas, 0, 0, $destCanvas.width, $destCanvas.height);
+      destCtx.restore();
     })();
   };
 })();
