@@ -23,7 +23,8 @@ const { tf, bodyPix } = window;
     $video.height = $destCanvas.height = $video.videoHeight;
 
     const destCtx = $destCanvas.getContext("2d");
-    $destCanvas.style.backgroundColor = "teal";
+    $destCanvas.style.backgroundImage = "url(./bg.jpg)";
+    $destCanvas.style.backgroundSize = "contain";
 
     // to remove background, need another canvas
     const $tempCanvas = document.createElement("canvas");
